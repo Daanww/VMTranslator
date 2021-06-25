@@ -1,0 +1,208 @@
+Stack:
+	push x:
+	@x
+	D=A
+	@0 //SP
+	A=M
+	M=D
+	@0 //SP
+	M=M+1
+	
+	pop x:
+	@0
+	M=M-1
+	@0
+	A=M
+	D=M
+	@x
+	M=D
+	
+	push constant x:
+	@x
+	D=A
+	@0 //SP
+	A=M
+	M=D
+	@0 //SP
+	M=M+1
+	
+Arithmatic:
+
+	add: //add the 2 top most value in stack while popping both then push result
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M //store top most entry in stack in D
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	M=D+M //add
+	@0
+	M=M+1 //increment SP
+	
+
+	sub: //substract the top-1 entry in stack by the top entry on stack, pop both, push result on stack
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M //store top most entry in stack in D
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	M=M-D //sub
+	@0
+	M=M+1 //increment SP
+	
+	neg: //x = -x
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	D=A-D //compute -x
+	A=M
+	M=D
+	@0
+	M=M+1 //increment SP again
+	
+	eq: //check if x and y are equal, store true if true and false if false
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	D=A-D
+	@EQ_TRUE
+	D;JEQ
+	@EQ_FALSE
+	D;JMP
+	
+	(EQ_TRUE)	
+	@-1 //boolean true, also 0xFFFF
+	D=A
+	@0
+	A=M
+	M=D
+	@EQ_END
+	D;JMP
+	
+	(EQ_FALSE)	
+	@0 //boolean false, also 0x0
+	D=A
+	A=M
+	M=D
+	
+	(EQ_END)	
+	@0
+	A=M
+	M=M+1 //incrementing SP
+	
+	
+	
+	gt: //check if x > y, store result (x = stacktop-1, y=stacktop)
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	D=A-D
+	@GT_TRUE
+	D;JGT
+	@GT_FALSE
+	D;JMP
+	
+	(GT_TRUE)	
+	@-1 //boolean true, also 0xFFFF
+	D=A
+	@0
+	A=M
+	M=D
+	@GT_END
+	D;JMP
+	
+	(GT_FALSE)	
+	@0 //boolean false, also 0x0
+	D=A
+	A=M
+	M=D
+	
+	(GT_END)	
+	@0
+	A=M
+	M=M+1 //incrementing SP
+
+
+	lt: //check if x < y, store result (x = stacktop-1, y=stacktop)
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	D=A-D
+	@LT_TRUE
+	D;JLT
+	@GT_FALSE
+	D;JMP
+	
+	(LT_TRUE)	
+	@-1 //boolean true, also 0xFFFF
+	D=A
+	@0
+	A=M
+	M=D
+	@LT_END
+	D;JMP
+	
+	(LT_FALSE)	
+	@0 //boolean false, also 0x0
+	D=A
+	A=M
+	M=D
+	
+	(LT_END)	
+	@0
+	A=M
+	M=M+1 //incrementing SP
+
+
+	and: //store AND of x and y
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	M=D&M //compute AND
+	@0
+	M=M+1 //increment SP
+	
+
+
+	or: //store OR of x and y
+	@0
+	M=M-1 //decrement SP
+	A=M
+	D=M
+	@0
+	M=M-1 //decrement SP again
+	A=M
+	M=D|M //compute OR
+	@0
+	M=M+1 //increment SP
+	
+	not: //store NOT y
+	@0
+	M=M-1 //decrement SP
+	A=M
+	M=!M
+	@0
+	M=M+1 //increment SP
+	
+	
