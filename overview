@@ -33,6 +33,12 @@ code parser:
 		open_vm_file():
 		opens a .vm file for reading, with proper error handling
 
+		get_current_file():
+		returns string name of current file that is being read
+
+		get_current_line():
+		returns the line number of current line in source file
+
 		read_line():
 		reads a line from the current opened document, checks for EOF and keeps track of line number in source code file for error indication
 
@@ -75,6 +81,7 @@ writer:
 
 memory handler:
 	basic overview:
+	Keeps track of stack, including stack pointer and if space is available on stack
 	Keeps track of which memory locations are being used and which are not being used.
 	Keeps track where variables and functions are stored.
 	Keeps track of which local memory segments are active.
@@ -84,5 +91,16 @@ memory handler:
 		checks if the argument variable is already stored in memory, if so returns the location of that variable
 		else it adds the variable in a suitable memory location and also returns location
 
+
+error handler:
+	basic overview:
+	this module handles error whenever an exception is found
+	this will printf() the location of the error (which .vm file and which line), the type of error (invalid syntax, unkown memory etc.)
+	and also a possible custom string at the end for more complicated cases.
+	After that it should terminate the program
+
+	required functions:
+		handle_error():
+		does that which is specified above.
 
 
