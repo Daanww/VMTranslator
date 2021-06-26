@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
+/home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
+
 /home/daan/Documents/vscodeprojects/VMTranslator/main.c
 stdio.h
 -
+code_parser.h
+/home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
 

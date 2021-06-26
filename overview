@@ -13,6 +13,14 @@ moet ook extra string supporten voor custom extra berichten
 
 
 implementation:
+main:
+	basic overview:
+	controls the main program flow. 
+
+	required functions:
+	
+
+
 code parser:
 	basic overview:
 	a module that first indexes all .vm files in the argument folder into an array, if the argument is a single file then add the single entry into the array

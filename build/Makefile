@@ -520,6 +520,60 @@ VMTranslator/fast:
 	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/build
 .PHONY : VMTranslator/fast
 
+code_parser.o: code_parser.c.o
+
+.PHONY : code_parser.o
+
+# target to build an object file
+code_parser.c.o:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/code_parser.c.o
+.PHONY : code_parser.c.o
+
+code_parser.i: code_parser.c.i
+
+.PHONY : code_parser.i
+
+# target to preprocess a source file
+code_parser.c.i:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/code_parser.c.i
+.PHONY : code_parser.c.i
+
+code_parser.s: code_parser.c.s
+
+.PHONY : code_parser.s
+
+# target to generate assembly for a file
+code_parser.c.s:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/code_parser.c.s
+.PHONY : code_parser.c.s
+
+error_handler.o: error_handler.c.o
+
+.PHONY : error_handler.o
+
+# target to build an object file
+error_handler.c.o:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/error_handler.c.o
+.PHONY : error_handler.c.o
+
+error_handler.i: error_handler.c.i
+
+.PHONY : error_handler.i
+
+# target to preprocess a source file
+error_handler.c.i:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/error_handler.c.i
+.PHONY : error_handler.c.i
+
+error_handler.s: error_handler.c.s
+
+.PHONY : error_handler.s
+
+# target to generate assembly for a file
+error_handler.c.s:
+	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/error_handler.c.s
+.PHONY : error_handler.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -587,6 +641,12 @@ help:
 	@echo "... ContinuousTest"
 	@echo "... ContinuousSubmit"
 	@echo "... VMTranslator"
+	@echo "... code_parser.o"
+	@echo "... code_parser.i"
+	@echo "... code_parser.s"
+	@echo "... error_handler.o"
+	@echo "... error_handler.i"
+	@echo "... error_handler.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

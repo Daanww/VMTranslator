@@ -3,5 +3,15 @@
   "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
   "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/main.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/main.c",
   "file": "/home/daan/Documents/vscodeprojects/VMTranslator/main.c"
+},
+{
+  "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
+  "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/code_parser.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/code_parser.c",
+  "file": "/home/daan/Documents/vscodeprojects/VMTranslator/code_parser.c"
+},
+{
+  "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
+  "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/error_handler.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/error_handler.c",
+  "file": "/home/daan/Documents/vscodeprojects/VMTranslator/error_handler.c"
 }
 ]
