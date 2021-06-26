@@ -5,6 +5,7 @@ CMakeFiles/VMTranslator.dir/code_parser.c.o: ../code_parser.c
 CMakeFiles/VMTranslator.dir/code_parser.c.o: ../code_parser.h
 CMakeFiles/VMTranslator.dir/code_parser.c.o: ../error_handler.h
 
+CMakeFiles/VMTranslator.dir/error_handler.c.o: ../code_parser.h
 CMakeFiles/VMTranslator.dir/error_handler.c.o: ../error_handler.c
 CMakeFiles/VMTranslator.dir/error_handler.c.o: ../error_handler.h
 

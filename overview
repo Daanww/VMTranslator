@@ -18,7 +18,7 @@ main:
 	controls the main program flow. 
 
 	required functions:
-	
+
 
 
 code parser:
@@ -38,10 +38,13 @@ code parser:
 		finds all .vm files in the specified folder and adds then into a string array for use with fopen() later.
 		if a .vm file is used as an argument instead it only adds that file into the array
 
-		open_vm_file():
-		opens a .vm file for reading, with proper error handling
+		get_total_num_files():
+		returns the total amount of .vm files found
 
-		get_current_file():
+		open_next_vm_file():
+		opens the next .vm file for reading, with proper error handling
+
+		get_current_file_name():
 		returns string name of current file that is being read
 
 		get_current_line():

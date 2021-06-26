@@ -3,14 +3,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include "error_handler.h"
+#include "code_parser.h"
 
 
 void handle_error(int error_type, bool extra_string, char* string) {
 	int current_line = 0;
-	char* current_file = NULL;
+	char current_file[128] = {0};
 
 	//get_current_line();
-	//get_current_file();
+	get_current_file_name(current_file, sizeof(current_file));
 
 	const char* error_type_string = NULL;
 
