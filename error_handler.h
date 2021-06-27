@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 //error types
-enum {
+enum error_types{
 	I_ARITHMETIC,
 	I_PUSH,
 	I_POP,

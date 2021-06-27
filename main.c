@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
 	printf("Contents of file_locations[0]: %s\n", file_name);
 	read_line();
 	format_line();
+	printf("Current line number: %i\n", get_current_line());
 	return 0;
 }
 

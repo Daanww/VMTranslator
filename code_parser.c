@@ -3,11 +3,12 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <math.h>
 
 #include "error_handler.h"
 #include "code_parser.h"
 
-#define MAX_LINE_LENGTH 256
+
 
 //maak de struct om de file_paths te bevatten
 static File_locations file_locations;
@@ -153,6 +154,7 @@ int read_line() {
 	return 0;
 }
 
+//formats the read line, removing whitespace and comments
 void format_line() {
 	char new_buffer[MAX_LINE_LENGTH] = {0};
 	int slash_flag = 0;
@@ -201,6 +203,211 @@ void format_line() {
 
 	printf("Formatted line: \"%s\"\n", line_buffer);
 }
+
+//decodes the formatted line into a command with 2 possible arguments
+//first we decode the command and then depending on the command 0, 1 or 2 additional arguments are decoded
+//they're all enumerated in the header file. The function takes in a pointer to a int[3] array which will be used as buffer for these enumerated instruction parts.
+//if a symbol is encountered, a name of a label or function, then the first argument will be set to S_NAME and the name will be stored in the char buffer supplied in the function arguments.
+//that way the decoded parts can be easily passed to different parts of the program
+void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int name_buffer_size) {
+	
+	//checking int_buffer size
+	if(int_buffer_size < 3) {
+		handle_error(OTHER_ERROR, true, "int_buffer that holds decoded instruction is too small (size must be >=3)");
+	}
+	//resetting int_buffer
+	int_buffer[0] = 0;
+	int_buffer[1] = 0;
+	int_buffer[2] = 0;
+
+	//checking name_buffer size
+	if(name_buffer_size < MAX_SYMBOL_LENGTH) {
+		handle_error(OTHER_ERROR, true, "name_buffer that holds symbol in decoded instruction is too small (size must be >=MAX_SYMBOL_LENGTH)");
+	}
+	//resetting name_buffer
+	memset(name_buffer, 0, name_buffer_size);
+
+
+	//checking if formatted line only consists of first letters and then maybe some digits
+	int line_length = strlen(line_buffer);
+	int letter_length = strspn(line_buffer, "abcdefghijklmnopqrstuvwxyz");
+	int number_length = strspn(&line_buffer[letter_length], "0123456789");
+	if((number_length + letter_length) != line_length) {
+		handle_error(OTHER_ERROR, true, "Formatted line does not consist of first letters and then digits!");
+	}
+	
+	//first decoding the command
+	char *found_string = NULL;
+
+	//push
+	found_string = strstr(line_buffer, "push");
+	if(found_string != NULL) { //found push
+		int_buffer[0] = C_PUSH;
+	}
+	//pop
+	found_string = strstr(line_buffer, "pop");
+	if(found_string != NULL) { //found pop
+		int_buffer[0] = C_POP;
+	}
+
+	//if no other commands have been found, then it is either arithmetic or error
+	if(int_buffer[0] == 0) { //no other commands have been recognized
+		//assuming it is arithmetic or error
+		int_buffer[0] = C_ARTIHMETIC;
+
+		//if it is an arithmetic command then the first argument becomes the type of arithmetic command
+
+		//add
+		found_string = strstr(line_buffer, "add");
+		if(found_string != NULL) { //found add
+			int_buffer[1] = A_ADD;
+		}	
+		//sub
+		found_string = strstr(line_buffer, "sub");
+		if(found_string != NULL) { //found sub
+			int_buffer[1] = A_SUB;
+		}
+		//neg
+		found_string = strstr(line_buffer, "neg");
+		if(found_string != NULL) { //found neg
+			int_buffer[1] = A_NEG;
+		}
+		//eq
+		found_string = strstr(line_buffer, "eq");
+		if(found_string != NULL) { //found eq
+			int_buffer[1] = A_EQ;
+		}
+		//gt
+		found_string = strstr(line_buffer, "gt");
+		if(found_string != NULL) { //found gt
+			int_buffer[1] = A_GT;
+		}
+		//lt
+		found_string = strstr(line_buffer, "lt");
+		if(found_string != NULL) { //found lt
+			int_buffer[1] = A_LT;
+		}
+		//and
+		found_string = strstr(line_buffer, "and");
+		if(found_string != NULL) { //found and
+			int_buffer[1] = A_AND;
+		}
+		//or
+		found_string = strstr(line_buffer, "or");
+		if(found_string != NULL) { //found or
+			int_buffer[1] = A_OR;
+		}
+		//not
+		found_string = strstr(line_buffer, "not");
+		if(found_string != NULL) { //found not
+			int_buffer[1] = A_NOT;
+		}
+
+		if(int_buffer[1] == 0) { //no commands have been recognized at all
+			handle_error(OTHER_ERROR, true, "No command has been recognized in the instruction!");
+		}
+
+	}
+
+	//handling arguments for push or pop
+	if(int_buffer[0] == C_PUSH || int_buffer[0] == C_POP) {
+		//searching for memory segments
+
+		//argument
+		found_string = strstr(line_buffer, "argument");
+		if(found_string != NULL) { //found argument
+			int_buffer[1] = M_ARGUMENT;
+		}
+		//local
+		found_string = strstr(line_buffer, "local");
+		if(found_string != NULL) { //found local
+			int_buffer[1] = M_LOCAL;
+		}
+		//static
+		found_string = strstr(line_buffer, "static");
+		if(found_string != NULL) { //found static
+			int_buffer[1] = M_STATIC;
+		}
+		//constant
+		found_string = strstr(line_buffer, "constant");
+		if(found_string != NULL) { //found constant
+			int_buffer[1] = M_CONSTANT;
+		}
+		//this
+		found_string = strstr(line_buffer, "this");
+		if(found_string != NULL) { //found this
+			int_buffer[1] = M_THIS;
+		}
+		//that
+		found_string = strstr(line_buffer, "that");
+		if(found_string != NULL) { //found that
+			int_buffer[1] = M_THAT;
+		}
+		//pointer
+		found_string = strstr(line_buffer, "pointer");
+		if(found_string != NULL) { //found pointer
+			int_buffer[1] = M_POINTER;
+		}
+		//temp
+		found_string = strstr(line_buffer, "temp");
+		if(found_string != NULL) { //found temp
+			int_buffer[1] = M_TEMP;
+		}
+
+		//handling error if no memory segment was found
+		if(int_buffer[1] == 0) {
+			handle_error(I_PUSH, true, "Cannot find a memory segment for this push/pop command.");
+		}
+
+		//finding number at the end of instruction
+		int_buffer[2] = get_num_value();
+		if(int_buffer[2] == -1) {
+			handle_error(I_PUSH, true, "A push/pop instruction requires a number, either as a constant or as an index for memory segment.");
+		}
+	}
+
+}
+
+//returns the decimal number from the command if it contains a number at the end
+//for example: push constant 23, this will return 23
+//or: function mult 2, this will return 2
+//will return -1 if it cannot find a decimal number
+int get_num_value() {
+	int number_value = 0;
+	int line_length = strlen(line_buffer);
+	int i = line_length-1;
+	for(; i > 0; i--) { 
+		if(line_buffer[i] != '0' && line_buffer[i] != '1' && 
+		line_buffer[i] != '2' && line_buffer[i] != '3' && 
+		line_buffer[i] != '4' && line_buffer[i] != '5' && 
+		line_buffer[i] != '6' && line_buffer[i] != '7' &&
+		line_buffer[i] != '8' && line_buffer[i] != '9' ) //if the character is not a digit
+			break;
+
+		number_value += ((int)line_buffer[i]-48) * pow(10, line_length-i+1);
+	}
+	if(i == line_length-1) { //if i hasnt been modified then there was no digit present, it breaks on the first character
+		return -1;
+	}
+	else {
+		if(number_value > 32767) {
+			handle_error(I_PUSH, true, "Constant must be between 0 .. 32767, inclusive.");
+		} else {
+			return number_value;
+
+		}
+	}
+}
+
+//close the current openend .vm file
+void close_current_vm_file() {
+	int error_status = fclose(file);
+	if(error_status == EOF) {
+		handle_error(OTHER_ERROR, true, "Could not close current .vm file!");
+	}
+}
+
+
 
 
 

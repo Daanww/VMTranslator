@@ -59,7 +59,7 @@ code parser:
 		decode_line():
 		decodes the line from format_line into a commandtype and 2 possible arguments, throws error on unexpected behavior
 
-		close_asm_file():
+		close_current_vm_file():
 		closes the current file, if this was the last file to be read then it starts program exit
 
 
