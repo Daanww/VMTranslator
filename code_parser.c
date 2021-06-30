@@ -145,8 +145,10 @@ int get_total_num_files() {
 }
 
 //opens a .vm file from the file_locations array and connects it to the pointer "file".
+//returns 0 on normal opening of file
+//if there are no more .vm files to open, returns EOF
 //handles errors associated with the .vm files
-void open_next_vm_file() {
+int open_next_vm_file() {
 	file_locations.current_file++; //increment current file index
 	current_line = 0; //reset current_line
 	if(file_locations.current_file < file_locations.num_files) { //check if current_file index is lower than total num of files
@@ -156,7 +158,10 @@ void open_next_vm_file() {
 			sprintf(temp_buffer, "Could not open %s.", file_locations.strings[file_locations.current_file]);
 			handle_error(OTHER_ERROR, true, temp_buffer);
 		}
-		
+		return 0;
+	}
+	else {
+		return EOF;
 	}
 }
 
@@ -180,7 +185,7 @@ int read_line() {
 	EOF_check = fgets(line_buffer, MAX_LINE_LENGTH, file);
 	if(EOF_check == NULL) {
 		printf("End of file reached!\n");
-		return -1;
+		return EOF;
 	}
 	if(strchr(line_buffer, '\0') == NULL) {
 		handle_error(OTHER_ERROR, true, "A line in the .vm file is too long.");
@@ -278,6 +283,12 @@ int get_num_value() {
 //that way the decoded parts can be easily passed to different parts of the program
 void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int name_buffer_size) {
 	
+	//skipping if line is empty after formatting
+	if(strlen(line_buffer) == 0) {
+		return;
+	}
+
+
 	//checking int_buffer size
 	if(int_buffer_size < 3) {
 		handle_error(OTHER_ERROR, true, "int_buffer that holds decoded instruction is too small (size must be >=3)");

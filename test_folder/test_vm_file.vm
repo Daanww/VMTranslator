@@ -1,1 +1,5 @@
-pop constant 420
+push constant 420
+push constant 1337
+add
+push constant 1
+and

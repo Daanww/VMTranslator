@@ -1,14 +1,14 @@
 Stack:
-	push x:
+	push variable x:
 	@x
-	D=A
+	D=M
 	@0 //SP
 	A=M
 	M=D
 	@0 //SP
 	M=M+1
 	
-	pop x:
+	pop variable x:
 	@0
 	M=M-1
 	@0
@@ -91,7 +91,7 @@ Arithmatic:
 	(EQ_FALSE)	
 	@0 //boolean false, also 0x0
 	D=A
-	A=M
+	A=M //no need to preface with @0 because a is already 0
 	M=D
 	
 	(EQ_END)	
@@ -99,7 +99,7 @@ Arithmatic:
 	A=M
 	M=M+1 //incrementing SP
 	
-	
+
 	
 	gt: //check if x > y, store result (x = stacktop-1, y=stacktop)
 	@0

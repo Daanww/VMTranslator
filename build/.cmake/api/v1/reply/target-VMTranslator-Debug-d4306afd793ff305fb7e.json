@@ -96,7 +96,8 @@
 				2,
 				4,
 				6,
-				8
+				8,
+				9
 			]
 		}
 	],
@@ -150,6 +151,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "writer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "vm_assembly.h",
 			"sourceGroupIndex" : 1
 		}
 	],
