@@ -11,4 +11,13 @@ CMakeFiles/VMTranslator.dir/error_handler.c.o: ../error_handler.h
 
 CMakeFiles/VMTranslator.dir/main.c.o: ../code_parser.h
 CMakeFiles/VMTranslator.dir/main.c.o: ../main.c
+CMakeFiles/VMTranslator.dir/main.c.o: ../writer.h
+
+CMakeFiles/VMTranslator.dir/memory_handler.c.o: ../code_parser.h
+CMakeFiles/VMTranslator.dir/memory_handler.c.o: ../error_handler.h
+CMakeFiles/VMTranslator.dir/memory_handler.c.o: ../memory_handler.c
+
+CMakeFiles/VMTranslator.dir/writer.c.o: ../code_parser.h
+CMakeFiles/VMTranslator.dir/writer.c.o: ../error_handler.h
+CMakeFiles/VMTranslator.dir/writer.c.o: ../writer.c
 

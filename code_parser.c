@@ -8,7 +8,11 @@
 #include "error_handler.h"
 #include "code_parser.h"
 
-
+typedef struct {
+	char strings[128][128];
+	int num_files;
+	int current_file;
+} File_locations;
 
 //maak de struct om de file_paths te bevatten
 static File_locations file_locations;
@@ -24,6 +28,7 @@ static char line_buffer[MAX_LINE_LENGTH];
 //the files it searches for are specified by the arguments when the program is executed
 //it searches through the whole folder if a folder is specified for all .vm files
 //or it just searches for one .vm file in the current directory if a .vm file is specified.
+//if debug=true, then it uses the arguments supplied inside function else it uses the arguments supplied at execution.
 void index_files(int argc, char *argv[], bool debug) {
 
 	if(debug) {
@@ -103,6 +108,36 @@ void index_files(int argc, char *argv[], bool debug) {
 
 	}
 
+}
+
+//used for the writer module to get the right file_name for the .asm file
+//copies the right file_name from argv to buffer, also removes .vm if a single file is specified by arguments
+void get_file_name(char *argv[], char *buffer, int buffer_size, bool debug) {
+	if(debug) {
+		argv[1] = "../test_folder";
+	}
+
+	if(buffer_size < 128) {
+		handle_error(OTHER_ERROR, true, "Buffer that holds file_name for opening .asm file is not big enough! (size must be >=128).\nCalled by function get_file_name() in code_parser.c");
+	}
+
+	//finding '/' if the file path contains it and skipping all stuff before file name
+	char *slash_location = NULL;
+	slash_location = strrchr(argv[1], '/'); //finding last occurrence of '/'
+		
+	if(slash_location != NULL) { //remove all "somestuff/someotherstuff/file_name" before filename
+		strcpy(buffer, (slash_location+1));
+	}
+	else {
+		strcpy(buffer, argv[1]);
+	}
+
+	//removing ".vm" from file name if it is there
+	char *dot_vm_location = NULL;
+	dot_vm_location = strstr(buffer, ".vm");
+	if(dot_vm_location != NULL) {
+		memset(dot_vm_location, 0, 3);
+	}
 }
 
 int get_total_num_files() {
@@ -203,6 +238,38 @@ void format_line() {
 
 	printf("Formatted line: \"%s\"\n", line_buffer);
 }
+
+//returns the decimal number from the command if it contains a number at the end
+//for example: push constant 23, this will return 23
+//or: function mult 2, this will return 2
+//will return -1 if it cannot find a decimal number
+int get_num_value() {
+	int number_value = 0;
+	int line_length = strlen(line_buffer);
+	int i = line_length-1;
+	for(; i > 0; i--) { 
+		if(line_buffer[i] != '0' && line_buffer[i] != '1' && 
+		line_buffer[i] != '2' && line_buffer[i] != '3' && 
+		line_buffer[i] != '4' && line_buffer[i] != '5' && 
+		line_buffer[i] != '6' && line_buffer[i] != '7' &&
+		line_buffer[i] != '8' && line_buffer[i] != '9' ) //if the character is not a digit
+			break;
+
+		number_value += ((int)line_buffer[i]-48) * pow(10, line_length-i-1);
+	}
+	if(i == line_length-1) { //if i hasnt been modified then there was no digit present, it breaks on the first character
+		return -1;
+	}
+	else {
+		if(number_value > 32767) {
+			handle_error(I_PUSH, true, "Constant must be between 0 .. 32767, inclusive.");
+		} else {
+			return number_value;
+
+		}
+	}
+}
+
 
 //decodes the formatted line into a command with 2 possible arguments
 //first we decode the command and then depending on the command 0, 1 or 2 additional arguments are decoded
@@ -368,36 +435,6 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 
 }
 
-//returns the decimal number from the command if it contains a number at the end
-//for example: push constant 23, this will return 23
-//or: function mult 2, this will return 2
-//will return -1 if it cannot find a decimal number
-int get_num_value() {
-	int number_value = 0;
-	int line_length = strlen(line_buffer);
-	int i = line_length-1;
-	for(; i > 0; i--) { 
-		if(line_buffer[i] != '0' && line_buffer[i] != '1' && 
-		line_buffer[i] != '2' && line_buffer[i] != '3' && 
-		line_buffer[i] != '4' && line_buffer[i] != '5' && 
-		line_buffer[i] != '6' && line_buffer[i] != '7' &&
-		line_buffer[i] != '8' && line_buffer[i] != '9' ) //if the character is not a digit
-			break;
-
-		number_value += ((int)line_buffer[i]-48) * pow(10, line_length-i+1);
-	}
-	if(i == line_length-1) { //if i hasnt been modified then there was no digit present, it breaks on the first character
-		return -1;
-	}
-	else {
-		if(number_value > 32767) {
-			handle_error(I_PUSH, true, "Constant must be between 0 .. 32767, inclusive.");
-		} else {
-			return number_value;
-
-		}
-	}
-}
 
 //close the current openend .vm file
 void close_current_vm_file() {

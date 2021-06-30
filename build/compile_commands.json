@@ -13,5 +13,15 @@
   "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
   "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/error_handler.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/error_handler.c",
   "file": "/home/daan/Documents/vscodeprojects/VMTranslator/error_handler.c"
+},
+{
+  "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
+  "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/memory_handler.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/memory_handler.c",
+  "file": "/home/daan/Documents/vscodeprojects/VMTranslator/memory_handler.c"
+},
+{
+  "directory": "/home/daan/Documents/vscodeprojects/VMTranslator/build",
+  "command": "/bin/x86_64-linux-gnu-gcc-9   -g   -o CMakeFiles/VMTranslator.dir/writer.c.o   -c /home/daan/Documents/vscodeprojects/VMTranslator/writer.c",
+  "file": "/home/daan/Documents/vscodeprojects/VMTranslator/writer.c"
 }
 ]

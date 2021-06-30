@@ -44,19 +44,17 @@ enum decoded_instruction_parts{
 	M_TEMP,
 };
 
-typedef struct {
-	char strings[128][128];
-	int num_files;
-	int current_file;
-} File_locations;
+
 
 void index_files(int argc, char *argv[], bool debug);
+void get_file_name(char *argv[], char *buffer, int buffer_size, bool debug);
 int get_total_num_files();
 void open_next_vm_file();
 void get_current_file_name(char* buffer, int buffer_size);
 int get_current_line();
 int read_line();
 void format_line();
+void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int name_buffer_size);
 void close_current_vm_file();
 
 #endif

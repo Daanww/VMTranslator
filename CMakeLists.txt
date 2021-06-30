@@ -4,7 +4,7 @@ project(VMTranslator VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-add_executable(VMTranslator main.c code_parser.c code_parser.h error_handler.c error_handler.h)
+add_executable(VMTranslator main.c code_parser.c code_parser.h error_handler.c error_handler.h memory_handler.c memory_handler.h writer.c writer.h)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

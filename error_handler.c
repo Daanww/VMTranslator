@@ -10,7 +10,7 @@ void handle_error(int error_type, bool extra_string, char* string) {
 	int current_line = 0;
 	char current_file[128] = {0};
 
-	//get_current_line();
+	current_line = get_current_line();
 	get_current_file_name(current_file, sizeof(current_file));
 
 	const char* error_type_string = NULL;

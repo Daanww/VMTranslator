@@ -12,3 +12,12 @@ CMakeFiles/VMTranslator.dir/error_handler.c.o
 CMakeFiles/VMTranslator.dir/main.c.o
  /home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
  /home/daan/Documents/vscodeprojects/VMTranslator/main.c
+ /home/daan/Documents/vscodeprojects/VMTranslator/writer.h
+CMakeFiles/VMTranslator.dir/memory_handler.c.o
+ /home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
+ /home/daan/Documents/vscodeprojects/VMTranslator/error_handler.h
+ /home/daan/Documents/vscodeprojects/VMTranslator/memory_handler.c
+CMakeFiles/VMTranslator.dir/writer.c.o
+ /home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
+ /home/daan/Documents/vscodeprojects/VMTranslator/error_handler.h
+ /home/daan/Documents/vscodeprojects/VMTranslator/writer.c

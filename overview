@@ -11,6 +11,14 @@ die ook zorgt voor opschoning van memory nadat een functie klaar is etc
 -error handler, een functie die error kan printen die indicatie geeft van welke soort error het is, in welk .vm file de error zit, op welke line in dat .vm file de error zit
 moet ook extra string supporten voor custom extra berichten
 
+de flow van het programma is dan als volgt:
+main initialiseert het programma en begint met excecuten
+code parser indexeert alle .vm files en opent de eerste
+dan leest code parser een line en decode dat in instructie type en arguments (arguments kunnen nummers of namen zijn)
+Deze gedecode line gaat dan naar de memory handler, die kijkt naar de instructies en arguments en probeert ze te mappen in de memory van de computer
+zodra deze gemapt zijn dan stuurt memory handler de gedecode instructies met gemapte memory addresses en misschien nog andere instructies naar de writer.
+De writer opent een .asm file en vertaalt dan de gedecode en gemapte instructies naar assembly en parsed die in de .asm file.
+
 
 implementation:
 main:
