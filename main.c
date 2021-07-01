@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
 	//initialization
-	bool debug_mode = false;
+	bool debug_mode = true;
 	index_files(argc, argv, debug_mode);
 	open_asm_file(argv, debug_mode);
 

@@ -147,7 +147,7 @@ Arithmatic:
 	D=A-D
 	@LT_TRUE
 	D;JLT
-	@GT_FALSE
+	@LT_FALSE
 	D;JMP
 	
 	(LT_TRUE)	

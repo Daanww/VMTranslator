@@ -114,7 +114,7 @@ void index_files(int argc, char *argv[], bool debug) {
 //copies the right file_name from argv to buffer, also removes .vm if a single file is specified by arguments
 void get_file_name(char *argv[], char *buffer, int buffer_size, bool debug) {
 	if(debug) {
-		argv[1] = "../test_folder";
+		argv[1] = "../test_folder/comparison_vm_test.vm";
 	}
 
 	if(buffer_size < 128) {

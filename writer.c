@@ -48,6 +48,7 @@ void write_comparison_operation(int operation) {
 
 	static char comp_buffer[128] = {0};
 
+
 	/*
 	template for comparison operation with eq as example:
 	comparison_start
@@ -62,8 +63,177 @@ void write_comparison_operation(int operation) {
 	comparison_end
 	*/
 
+	//comparison_start
 	fputs(comparison_start, asm_file);
-	sprintf(comp_buffer, "");
+
+
+	//write:
+	//eq_true with eq_jump
+	//eq_false with always_jump
+	//(eq_true)
+	switch (operation)
+	{
+	case A_EQ:
+		//eq_true with eq_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[0], n_eq);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JEQ\n", asm_file);
+
+		//eq_false with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[1], n_eq);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(eq_true)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[0], n_eq);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_GT:
+		//gt_true with gt_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[3], n_gt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JGT\n", asm_file);
+
+		//gt_false with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[4], n_gt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(gt_true)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[3], n_gt);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_LT:
+
+		//lt_true with lt_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[6], n_lt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JLT\n", asm_file);
+
+		//lt_false with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[7], n_lt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(lt_true)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[6], n_lt);
+		fputs(comp_buffer, asm_file);
+		break;
+	
+	default:
+		handle_error(OTHER_ERROR, true, "Unknown comparison operation encountered! Called by write_comparison_operation()");
+		break;
+	}
+	
+	//comparison_true
+	fputs(comparison_true, asm_file);
+
+	//write:
+	//eq_end with always_jump
+	//(eq_false)
+	switch (operation)
+	{
+	case A_EQ:
+		
+		//eq_end with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[2], n_eq);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(eq_false)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[1], n_eq);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_GT:
+		
+		//gt_end with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[5], n_gt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(gt_false)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[4], n_gt);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_LT:
+
+		//lt_end with always_jump
+		sprintf(comp_buffer, "@%s.%i\n", comparison_labels[8], n_lt);
+		fputs(comp_buffer, asm_file);
+		fputs("D;JMP\n", asm_file);
+
+		//(lt_false)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[7], n_lt);
+		fputs(comp_buffer, asm_file);
+		break;
+	
+	default:
+		handle_error(OTHER_ERROR, true, "Unknown comparison operation encountered! Called by write_comparison_operation()");
+		break;
+	}
+
+	//comparison_false
+	fputs(comparison_false, asm_file);
+
+	//write:
+	//(eq_end)
+	switch (operation)
+	{
+	case A_EQ:
+	
+		//(eq_end)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[2], n_eq);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_GT:
+
+		//(gt_end)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[5], n_gt);
+		fputs(comp_buffer, asm_file);
+		break;
+
+	case A_LT:
+
+		//(lt_end)
+		sprintf(comp_buffer, "(%s.%i)\n", comparison_labels[8], n_lt);
+		fputs(comp_buffer, asm_file);
+		break;
+	
+	default:
+		handle_error(OTHER_ERROR, true, "Unknown comparison operation encountered! Called by write_comparison_operation()");
+		break;
+	}
+
+	//comparison_end
+	fputs(comparison_end, asm_file);
+
+	//incrementing counters
+	switch (operation)
+	{
+	case A_EQ:
+		printf("Wrote \"eq.%i\" to assembly file!\n", n_eq);
+		n_eq++;
+		break;
+
+	case A_GT:
+		printf("Wrote \"gt.%i\" to assembly file!\n", n_gt);
+		n_gt++;
+		break;
+
+	case A_LT:
+		printf("Wrote \"lt.%i\" to assembly file!\n", n_lt);
+		n_lt++;
+		break;
+	
+	default:
+		break;
+	}
+
 
 }
 
@@ -88,17 +258,15 @@ void write_arithmetic(int *decoded_instruction_buffer, int decoded_instruction_b
 		break;
 
 	case A_EQ:
-		
+		write_comparison_operation(decoded_instruction_buffer[1]);
 		break;
 
 	case A_GT:
-		fputs(gt, asm_file);
-		printf("Wrote a \"gt\" to assembly file!\n");
+		write_comparison_operation(decoded_instruction_buffer[1]);
 		break;
 
 	case A_LT:
-		fputs(lt, asm_file);
-		printf("Wrote a \"lt\" to assembly file!\n");
+		write_comparison_operation(decoded_instruction_buffer[1]);
 		break;
 
 	case A_AND:
