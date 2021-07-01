@@ -110,7 +110,7 @@ void index_files(int argc, char *argv[]) {
 
 //used for the writer module to get the right file_name for the .asm file
 //copies the right file_name from argv to buffer, also removes .vm if a single file is specified by arguments
-void get_file_name(char *argv[], char *buffer, int buffer_size) {
+void get_file_or_dir_name(char *argv[], char *buffer, int buffer_size) {
 
 	if(buffer_size < 128) {
 		handle_error(OTHER_ERROR, true, "Buffer that holds file_name for opening .asm file is not big enough! (size must be >=128).\nCalled by function get_file_name() in code_parser.c");
@@ -165,7 +165,25 @@ void get_current_file_name(char* buffer, int buffer_size) {
 	if(buffer_size < 128) {
 		return;
 	}
-	strncpy(buffer, file_locations.strings[file_locations.current_file], buffer_size-1);
+	//strncpy(buffer, file_locations.strings[file_locations.current_file], buffer_size-1);
+
+	//finding '/' if the file path contains it and skipping all stuff before file name
+	char *slash_location = NULL;
+	slash_location = strrchr(file_locations.strings[file_locations.current_file], '/'); //finding last occurrence of '/'
+		
+	if(slash_location != NULL) { //remove all "somestuff/someotherstuff/file_name" before filename
+		strcpy(buffer, (slash_location+1));
+	}
+	else {
+		strcpy(buffer, file_locations.strings[file_locations.current_file]);
+	}
+
+	//removing ".vm" from file name if it is there
+	char *dot_vm_location = NULL;
+	dot_vm_location = strstr(buffer, ".vm");
+	if(dot_vm_location != NULL) {
+		memset(dot_vm_location, 0, 3);
+	}
 }
 
 int get_current_line() {

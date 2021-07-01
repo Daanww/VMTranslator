@@ -30,7 +30,7 @@ static bool already_lt = false;
 void open_asm_file(char *argv[]) {
 	//open asm file
 	char file_name[128] = {0};
-	get_file_name(argv, file_name, sizeof(file_name));
+	get_file_or_dir_name(argv, file_name, sizeof(file_name));
 
 	strcat(file_name, ".asm");
 
@@ -299,28 +299,68 @@ void write_constant(int constant) {
 	fputs(line_buffer, asm_file);
 }
 
+void write_static(int *decoded_instruction_buffer) {
+	//constructing variable name from file_name and instruction arguments
+	char variable_name[MAX_SYMBOL_LENGTH] = {0};
+	variable_name[0] = '@';
+	char file_name[MAX_SYMBOL_LENGTH] = {0};
+	get_current_file_name(file_name, sizeof(file_name));
+	strcat(variable_name, file_name); //append file name to @
+	sprintf(file_name, ".%i\n", decoded_instruction_buffer[2]);
+	strcat(variable_name, file_name); //append .number\n to @file_name
+
+	//checking for push/pop
+	if(decoded_instruction_buffer[0] == C_PUSH) {
+		fputs(variable_name, asm_file);
+		fputs(push_static, asm_file);
+	}
+	else if(decoded_instruction_buffer[0] == C_POP) {
+		fputs(pop_static_1, asm_file);
+		fputs(variable_name, asm_file);
+		fputs(pop_static_2, asm_file);
+	}
+
+}
+
 //write push operation to .asm file
 void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
 	//deciding which type of memory push is needed
 	switch (decoded_instruction_buffer[1])
 	{
+
+	case M_STATIC:
+		write_static(decoded_instruction_buffer);
+		break;
+
 	case M_CONSTANT:
 		write_constant(decoded_instruction_buffer[2]);
 		fputs(push_constant,asm_file);
 		printf("Wrote a \"push constant %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
-	case A_SUB:
-		fputs(sub, asm_file);
-		printf("Wrote a \"sub\" to assembly file!\n");
-		break;
+	
 	
 	default:
 		break;
 	}
 }
 
+void write_pop(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
+	
+	//deciding which type of memory pop is needed
+	switch (decoded_instruction_buffer[1])
+	{
 
+	case M_STATIC:
+		write_static(decoded_instruction_buffer);
+		break;
+
+
+	
+	default:
+		break;
+	}
+}
 
 //translate the received instructions into assembly and write that into the opened file
 void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
@@ -347,6 +387,7 @@ void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_
 
 	case C_POP:
 		//write pop instructions
+		write_pop(decoded_instruction_buffer, decoded_instruction_buffer_size, symbol_buffer, symbol_buffer_size);
 		break;
 	
 	default:

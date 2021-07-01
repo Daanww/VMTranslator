@@ -11,7 +11,6 @@ Stack:
 	pop variable x:
 	@0
 	M=M-1
-	@0
 	A=M
 	D=M
 	@x

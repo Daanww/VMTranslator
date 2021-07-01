@@ -38,6 +38,8 @@ const char not[] = "@0\nM=M-1 //decrement SP\nA=M\nM=!M //compute NOT\n@0\nM=M+1
 
 
 const char push_constant[] = "D=A\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n";
-
+const char push_static[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //needs an @Xxx\n in front of it to function
+const char pop_static_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires an @Xxx\n in the middle to function
+const char pop_static_2[] = "M=D\n";
 
 #endif

@@ -1,5 +1,5 @@
-@13
-D=A
+@comparison_vm_test.0
+D=M
 @0 //SP
 A=M
 M=D
@@ -25,8 +25,9 @@ D;JGT
 @GT_FALSE.0
 D;JMP
 (GT_TRUE.0)
-@32767 //boolean true, also 0xFFFF
+@0 //boolean true, also 0xFFFF
 D=A
+D=D-1
 @0
 A=M
 M=D
@@ -40,3 +41,9 @@ M=D
 (GT_END.0)
 @0
 M=M+1 //incrementing SP
+@0
+M=M-1
+A=M
+D=M
+@comparison_vm_test.2
+M=D
