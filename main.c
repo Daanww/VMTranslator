@@ -4,9 +4,13 @@
 
 int main(int argc, char *argv[]) {
 	//initialization
-	bool debug_mode = true;
-	index_files(argc, argv, debug_mode);
-	open_asm_file(argv, debug_mode);
+	bool debug_mode = false;
+	if(debug_mode) {
+		argc = 2;
+		argv[1] = "../test_folder/comparison_vm_test.vm";
+	}
+	index_files(argc, argv);
+	open_asm_file(argv);
 
 	int end_of_vm_file_indicator = 0;
 

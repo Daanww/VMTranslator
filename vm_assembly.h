@@ -21,10 +21,10 @@ const char neg[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nD=A-D //compute -x\n
 
 
 //asm instructions for comparison operations
-const char comparison_start[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP again\nA=M\nD=A-D\n";
-const char comparison_true[] = "@-1 //boolean true, also 0xFFFF\nD=A\n@0\nA=M\nM=D\n";
+const char comparison_start[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP again\nA=M\nD=M-D\n";
+const char comparison_true[] = "@0 //boolean true, also 0xFFFF\nD=A\nD=D-1\n@0\nA=M\nM=D\n";
 const char comparison_false[] = "@0 //boolean false, also 0x0\nD=A\nA=M\nM=D\n";
-const char comparison_end[] = "@0\nA=M\nM=M+1 //incrementing SP\n";
+const char comparison_end[] = "@0\nM=M+1 //incrementing SP\n";
 const char comparison_labels[][10] = {	"EQ_TRUE", "EQ_FALSE", "EQ_END", 
 										"GT_TRUE", "GT_FALSE", "GT_END", 
 										"LT_TRUE", "LT_FALSE", "LT_END"	};
@@ -34,7 +34,7 @@ const char comparison_labels[][10] = {	"EQ_TRUE", "EQ_FALSE", "EQ_END",
 //asm instructions for bitwise operations
 const char and[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP again\nA=M\nM=D&M //compute AND\n@0\nM=M+1 //increment SP\n";
 const char or[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP again\nA=M\nM=D|M //compute OR\n@0\nM=M+1 //increment SP\n";
-const char not[] = "@0\nM=M-1 //decrement SP\nA=M\nM=!M\n@0\nM=M+1 //increment SP\n";
+const char not[] = "@0\nM=M-1 //decrement SP\nA=M\nM=!M //compute NOT\n@0\nM=M+1 //increment SP\n";
 
 
 const char push_constant[] = "D=A\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n";

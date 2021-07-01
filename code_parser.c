@@ -29,12 +29,7 @@ static char line_buffer[MAX_LINE_LENGTH];
 //it searches through the whole folder if a folder is specified for all .vm files
 //or it just searches for one .vm file in the current directory if a .vm file is specified.
 //if debug=true, then it uses the arguments supplied inside function else it uses the arguments supplied at execution.
-void index_files(int argc, char *argv[], bool debug) {
-
-	if(debug) {
-		argc = 2;
-		argv[1] = "../test_folder";
-	}
+void index_files(int argc, char *argv[]) {
 
 	//first check if arguments are correct
 	if(argc > 2) {
@@ -53,12 +48,17 @@ void index_files(int argc, char *argv[], bool debug) {
 		}		
 	}
 
+	//setup counters for files
+	file_locations.num_files = 0;
+	file_locations.current_file = -1; //set to -1 to allow open_vm_file() to increment before trying to read a file
+		//this makes it smaller and more streamlined than always having current_file index be one higher than the actual current file index
 
 	//check of argument .vm file is en check of het bestaat
 	char *dot_vm_location = strstr(argv[1], ".vm");
 	if(dot_vm_location != NULL) {
 		//argument is een .vm file
 		strcpy(file_locations.strings[0], argv[1]);
+		file_locations.num_files++;
 		if(file_locations.strings[0][127] != 0) { //checking for overflow
 			handle_error(OTHER_ERROR, true, ".vm filename is too long. (max is 127 characters)");
 		}
@@ -80,9 +80,7 @@ void index_files(int argc, char *argv[], bool debug) {
 
 		//reads the directory entries from directory stream
 		int index = 0;
-		file_locations.num_files = 0;
-		file_locations.current_file = -1; //set to -1 to allow open_vm_file() to increment before trying to read a file
-		//this makes it smaller and more streamlined than always having current_file index be one higher than the actual current file index
+		
 		while ((directory_entry = readdir(directory_stream)) != NULL)
 		{
 			char *dot_vm_pointer = strstr(directory_entry->d_name, ".vm");
@@ -112,10 +110,7 @@ void index_files(int argc, char *argv[], bool debug) {
 
 //used for the writer module to get the right file_name for the .asm file
 //copies the right file_name from argv to buffer, also removes .vm if a single file is specified by arguments
-void get_file_name(char *argv[], char *buffer, int buffer_size, bool debug) {
-	if(debug) {
-		argv[1] = "../test_folder/comparison_vm_test.vm";
-	}
+void get_file_name(char *argv[], char *buffer, int buffer_size) {
 
 	if(buffer_size < 128) {
 		handle_error(OTHER_ERROR, true, "Buffer that holds file_name for opening .asm file is not big enough! (size must be >=128).\nCalled by function get_file_name() in code_parser.c");

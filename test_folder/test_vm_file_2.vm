@@ -1,3 +1,5 @@
 push constant 23
 sub
+gt
+eq
 or

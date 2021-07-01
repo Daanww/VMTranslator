@@ -73,7 +73,7 @@ Arithmatic:
 	@0
 	M=M-1 //decrement SP again
 	A=M
-	D=A-D
+	D=M-D
 	@EQ_TRUE
 	D;JEQ
 	@EQ_FALSE
@@ -96,7 +96,6 @@ Arithmatic:
 	
 	(EQ_END)	
 	@0
-	A=M
 	M=M+1 //incrementing SP
 	
 
@@ -109,7 +108,7 @@ Arithmatic:
 	@0
 	M=M-1 //decrement SP again
 	A=M
-	D=A-D
+	D=M-D
 	@GT_TRUE
 	D;JGT
 	@GT_FALSE
@@ -132,7 +131,6 @@ Arithmatic:
 	
 	(GT_END)	
 	@0
-	A=M
 	M=M+1 //incrementing SP
 
 
@@ -144,7 +142,7 @@ Arithmatic:
 	@0
 	M=M-1 //decrement SP again
 	A=M
-	D=A-D
+	D=M-D
 	@LT_TRUE
 	D;JLT
 	@LT_FALSE
@@ -167,8 +165,10 @@ Arithmatic:
 	
 	(LT_END)	
 	@0
-	A=M
 	M=M+1 //incrementing SP
+
+
+
 
 
 	and: //store AND of x and y

@@ -46,8 +46,8 @@ enum decoded_instruction_parts{
 
 
 
-void index_files(int argc, char *argv[], bool debug);
-void get_file_name(char *argv[], char *buffer, int buffer_size, bool debug);
+void index_files(int argc, char *argv[]);
+void get_file_name(char *argv[], char *buffer, int buffer_size);
 int get_total_num_files();
 int open_next_vm_file();
 void get_current_file_name(char* buffer, int buffer_size);

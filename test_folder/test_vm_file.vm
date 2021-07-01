@@ -3,3 +3,4 @@ push constant 1337
 add
 push constant 1
 and
+lt

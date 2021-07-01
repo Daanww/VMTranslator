@@ -27,10 +27,10 @@ static bool already_lt = false;
 
 
 //uses get_file_name() to get the name for the .asm file
-void open_asm_file(char *argv[], bool debug) {
+void open_asm_file(char *argv[]) {
 	//open asm file
 	char file_name[128] = {0};
-	get_file_name(argv, file_name, sizeof(file_name), debug);
+	get_file_name(argv, file_name, sizeof(file_name));
 
 	strcat(file_name, ".asm");
 
