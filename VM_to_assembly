@@ -253,4 +253,6 @@ This/That:
 	A=M
 	M=D
 
+Local/Argument:
+	Same as This/That but with LCL and ARG instead of THIS and THAT and @temp_lcl_arg instead of @temp_this_that
 

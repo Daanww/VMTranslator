@@ -1,2 +1,2 @@
-push this 2
-pop that 1
+push local 2
+pop argument 5

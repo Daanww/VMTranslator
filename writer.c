@@ -297,6 +297,7 @@ void write_constant(int constant) {
 	char line_buffer[128] = {0};
 	sprintf(line_buffer, "@%i\n", constant);
 	fputs(line_buffer, asm_file);
+	fputs(push_constant,asm_file);
 }
 
 void write_static(int *decoded_instruction_buffer) {
@@ -363,11 +364,63 @@ void write_this_that(int *decoded_instruction_buffer) {
 	}
 }
 
+void write_local_argument(int *decoded_instruction_buffer) {
+	char local_argument_buffer[MAX_SYMBOL_LENGTH] = {0};
+	sprintf(local_argument_buffer, "@%i\n", decoded_instruction_buffer[2]);
+	if(decoded_instruction_buffer[0] == C_PUSH) {
+		if(decoded_instruction_buffer[1] == M_LOCAL) {
+			fputs(push_local_1, asm_file);
+			fputs(local_argument_buffer, asm_file);
+		}
+		else if(decoded_instruction_buffer[1] == M_ARGUMENT) {
+			fputs(push_argument_1, asm_file);
+			fputs(local_argument_buffer, asm_file);
+		}
+		fputs(push_local_argument_2, asm_file);
+	}
+	else if(decoded_instruction_buffer[0] == C_POP) {
+		if(decoded_instruction_buffer[1] == M_LOCAL) {
+			fputs(pop_local_1, asm_file);
+			fputs(local_argument_buffer, asm_file);
+		}
+		else if(decoded_instruction_buffer[1] == M_ARGUMENT) {
+			fputs(pop_argument_1, asm_file);
+			fputs(local_argument_buffer, asm_file);
+		}
+		fputs(pop_local_argument_2, asm_file);
+	}
+}
+
+void write_temp(int *decoded_instruction_buffer) {
+	//write_temp is essentially the same as write_pointer, just with a different base address
+	char temp_buffer[MAX_SYMBOL_LENGTH] = {0};
+	sprintf(temp_buffer, "@%i\n", (5 + decoded_instruction_buffer[2]));
+	if(decoded_instruction_buffer[0] == C_PUSH) {
+		fputs(temp_buffer, asm_file);
+		fputs(push_temp, asm_file);
+	}
+	else if(decoded_instruction_buffer[0] == C_POP) {
+		fputs(pop_temp_1, asm_file);
+		fputs(temp_buffer, asm_file);
+		fputs(pop_temp_2, asm_file);
+	}
+}
+
 //write push operation to .asm file
 void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
 	//deciding which type of memory push is needed
 	switch (decoded_instruction_buffer[1])
 	{
+
+	case M_LOCAL:
+		write_local_argument(decoded_instruction_buffer);
+		printf("Wrote a \"push local %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+		
+	case M_ARGUMENT:
+		write_local_argument(decoded_instruction_buffer);
+		printf("Wrote a \"push argument %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
 
 	case M_STATIC:
 		write_static(decoded_instruction_buffer);
@@ -375,8 +428,7 @@ void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_
 		break;
 
 	case M_CONSTANT:
-		write_constant(decoded_instruction_buffer[2]);
-		fputs(push_constant,asm_file);
+		write_constant(decoded_instruction_buffer[2]);		
 		printf("Wrote a \"push constant %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
@@ -395,6 +447,11 @@ void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_
 		printf("Wrote a \"push pointer %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
+	case M_TEMP:
+		write_temp(decoded_instruction_buffer);
+		printf("Wrote a \"push temp %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+
 	
 	default:
 		break;
@@ -406,6 +463,16 @@ void write_pop(int *decoded_instruction_buffer, int decoded_instruction_buffer_s
 	//deciding which type of memory pop is needed
 	switch (decoded_instruction_buffer[1])
 	{
+
+	case M_LOCAL:
+		write_local_argument(decoded_instruction_buffer);
+		printf("Wrote a \"pop local %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+		
+	case M_ARGUMENT:
+		write_local_argument(decoded_instruction_buffer);
+		printf("Wrote a \"pop argument %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
 
 	case M_STATIC:
 		write_static(decoded_instruction_buffer);
@@ -428,6 +495,11 @@ void write_pop(int *decoded_instruction_buffer, int decoded_instruction_buffer_s
 		printf("Wrote a \"pop pointer %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 	
+	case M_TEMP:
+		write_temp(decoded_instruction_buffer);
+		printf("Wrote a \"pop temp %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+
 	default:
 		break;
 	}

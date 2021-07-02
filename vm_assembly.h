@@ -36,7 +36,12 @@ const char and[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP
 const char or[] = "@0\nM=M-1 //decrement SP\nA=M\nD=M\n@0\nM=M-1 //decrement SP again\nA=M\nM=D|M //compute OR\n@0\nM=M+1 //increment SP\n";
 const char not[] = "@0\nM=M-1 //decrement SP\nA=M\nM=!M //compute NOT\n@0\nM=M+1 //increment SP\n";
 
-
+const char push_local_1[] = "@LCL\nD=M\n"; //requires a @x in the middle with x being the second argument, eg the 2 in push local 2
+const char push_argument_1[] = "@ARG\nD=M\n"; //requires a @x in the middle with x being the second argument, eg the 2 in push argument 2
+const char push_local_argument_2[] = "A=D+A //compute location we want to access\nD=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n";
+const char pop_local_1[] = "@LCL\nD=M\n"; //requires a @x in the middle with x being the second argument, eg the 2 in push local 2
+const char pop_argument_1[] = "@ARG\nD=M\n"; //requires a @x in the middle with x being the second argument, eg the 2 in push argument 2
+const char pop_local_argument_2[] = "D=D+A\n@temp_lcl_arg\nM=D //storing LCL/ARG+x for use later\n@0 //SP\nM=M-1\nA=M\nD=M\n@temp_lcl_arg\nA=M\nM=D\n";
 
 const char push_static[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //needs an @Xxx\n in front of it to function
 const char pop_static_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires an @Xxx\n in the middle to function
@@ -51,9 +56,13 @@ const char pop_this_1[] = "@THIS\nD=M\n"; //requires a @x in the middle with x b
 const char pop_that_1[] = "@THAT\nD=M\n"; //requires a @x in the middle with x being the second argument, eg the 2 in push this 2
 const char pop_this_that_2[] = "D=D+A\n@temp_this_that\nM=D //storing THIS/THAT+x for use later\n@0 //SP\nM=M-1\nA=M\nD=M\n@temp_this_that\nA=M\nM=D\n";
 
+
 const char push_pointer[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //requires a @3+x in front of it to function, x being the x in push pointer x
 const char pop_pointer_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires a @3+x in the middle
 const char pop_pointer_2[] = "M=D\n";
 
+const char push_temp[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //requires a @3+x in front of it to function, x being the x in push temp x
+const char pop_temp_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires a @3+x in the middle
+const char pop_temp_2[] = "M=D\n";
 
 #endif
