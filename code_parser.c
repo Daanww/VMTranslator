@@ -327,6 +327,8 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 		handle_error(OTHER_ERROR, true, "Formatted line does not consist of first letters and then digits!");
 	}
 	
+	#pragma region identify_command
+
 	//first decoding the command
 	char *found_string = NULL;
 
@@ -340,6 +342,26 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	if(found_string != NULL) { //found pop
 		int_buffer[0] = C_POP;
 	}
+
+	//label
+	found_string = strstr(line_buffer, "label");
+	if(found_string != NULL) { //found label
+		int_buffer[0] = C_LABEL;
+	}
+
+	//goto and if-goto
+	found_string = strstr(line_buffer, "goto");
+	if(found_string != NULL) { //found goto, might still be if-goto
+		found_string = strstr(line_buffer, "if");
+		if(found_string == NULL) { //found goto
+			int_buffer[0] = C_GOTO;
+		}
+		else { //found if-goto
+			int_buffer[0] = C_IF;
+		}
+	}
+
+	
 
 	//if no other commands have been found, then it is either arithmetic or error
 	if(int_buffer[0] == 0) { //no other commands have been recognized
@@ -400,6 +422,8 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 
 	}
 
+	#pragma endregion identify_command
+
 	//handling arguments for push or pop
 	if(int_buffer[0] == C_PUSH || int_buffer[0] == C_POP) {
 		//searching for memory segments
@@ -457,6 +481,7 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 		}
 	}
 
+	//handling symbol for label, goto and if-goto
 }
 
 

@@ -1,3 +1,11 @@
+Init:
+	@256
+	D=A
+	@0
+	M=D //set SP to 256
+	
+
+
 Stack:
 	push variable x:
 	@x

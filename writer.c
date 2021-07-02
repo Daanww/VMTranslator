@@ -538,7 +538,9 @@ void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_
 	}
 }
 
-
+void write_init() {
+	
+}
 
 //closes the .asm file
 void close_asm_file() {
