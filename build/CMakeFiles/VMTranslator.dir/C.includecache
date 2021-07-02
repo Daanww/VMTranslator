@@ -10,13 +10,23 @@
 stdbool.h
 -
 
-/home/daan/Documents/vscodeprojects/VMTranslator/main.c
+/home/daan/Documents/vscodeprojects/VMTranslator/error_handler.h
+stdbool.h
+-
+
+/home/daan/Documents/vscodeprojects/VMTranslator/vm_assembly.h
+string.h
+-
+
+/home/daan/Documents/vscodeprojects/VMTranslator/writer.c
 stdio.h
+-
+string.h
 -
 code_parser.h
 /home/daan/Documents/vscodeprojects/VMTranslator/code_parser.h
-writer.h
-/home/daan/Documents/vscodeprojects/VMTranslator/writer.h
-
-/home/daan/Documents/vscodeprojects/VMTranslator/writer.h
+error_handler.h
+/home/daan/Documents/vscodeprojects/VMTranslator/error_handler.h
+vm_assembly.h
+/home/daan/Documents/vscodeprojects/VMTranslator/vm_assembly.h
 

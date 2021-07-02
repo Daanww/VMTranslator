@@ -322,6 +322,47 @@ void write_static(int *decoded_instruction_buffer) {
 
 }
 
+void write_pointer(int *decoded_instruction_buffer) {
+	char pointer_buffer[MAX_SYMBOL_LENGTH] = {0};
+	sprintf(pointer_buffer, "@%i\n", (3 + decoded_instruction_buffer[2]));
+	if(decoded_instruction_buffer[0] == C_PUSH) {
+		fputs(pointer_buffer, asm_file);
+		fputs(push_pointer, asm_file);
+	}
+	else if(decoded_instruction_buffer[0] == C_POP) {
+		fputs(pop_pointer_1, asm_file);
+		fputs(pointer_buffer, asm_file);
+		fputs(pop_pointer_2, asm_file);
+	}
+}
+
+void write_this_that(int *decoded_instruction_buffer) {
+	char this_that_buffer[MAX_SYMBOL_LENGTH] = {0};
+	sprintf(this_that_buffer, "@%i\n", decoded_instruction_buffer[2]);
+	if(decoded_instruction_buffer[0] == C_PUSH) {
+		if(decoded_instruction_buffer[1] == M_THIS) {
+			fputs(push_this_1, asm_file);
+			fputs(this_that_buffer, asm_file);
+		}
+		else if(decoded_instruction_buffer[1] == M_THAT) {
+			fputs(push_that_1, asm_file);
+			fputs(this_that_buffer, asm_file);
+		}
+		fputs(push_this_that_2, asm_file);
+	}
+	else if(decoded_instruction_buffer[0] == C_POP) {
+		if(decoded_instruction_buffer[1] == M_THIS) {
+			fputs(pop_this_1, asm_file);
+			fputs(this_that_buffer, asm_file);
+		}
+		else if(decoded_instruction_buffer[1] == M_THAT) {
+			fputs(pop_that_1, asm_file);
+			fputs(this_that_buffer, asm_file);
+		}
+		fputs(pop_this_that_2, asm_file);
+	}
+}
+
 //write push operation to .asm file
 void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
 	//deciding which type of memory push is needed
@@ -330,6 +371,7 @@ void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_
 
 	case M_STATIC:
 		write_static(decoded_instruction_buffer);
+		printf("Wrote a \"push static %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
 	case M_CONSTANT:
@@ -338,7 +380,21 @@ void write_push(int *decoded_instruction_buffer, int decoded_instruction_buffer_
 		printf("Wrote a \"push constant %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
-	
+	case M_THIS:
+		write_this_that(decoded_instruction_buffer);
+		printf("Wrote a \"push this %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+		
+	case M_THAT:
+		write_this_that(decoded_instruction_buffer);
+		printf("Wrote a \"push that %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+
+	case M_POINTER:
+		write_pointer(decoded_instruction_buffer);
+		printf("Wrote a \"push pointer %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+
 	
 	default:
 		break;
@@ -353,9 +409,24 @@ void write_pop(int *decoded_instruction_buffer, int decoded_instruction_buffer_s
 
 	case M_STATIC:
 		write_static(decoded_instruction_buffer);
+		printf("Wrote a \"pop static %i\" to assembly file!\n", decoded_instruction_buffer[2]);
 		break;
 
+	case M_THIS:
+		write_this_that(decoded_instruction_buffer);
+		printf("Wrote a \"pop this %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+		
+	case M_THAT:
+		write_this_that(decoded_instruction_buffer);
+		printf("Wrote a \"pop that %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
+	
 
+	case M_POINTER:
+		write_pointer(decoded_instruction_buffer);
+		printf("Wrote a \"pop pointer %i\" to assembly file!\n", decoded_instruction_buffer[2]);
+		break;
 	
 	default:
 		break;
