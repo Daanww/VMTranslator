@@ -292,7 +292,7 @@ int get_num_value() {
 //decodes the formatted line into a command with 2 possible arguments
 //first we decode the command and then depending on the command 0, 1 or 2 additional arguments are decoded
 //they're all enumerated in the header file. The function takes in a pointer to a int[3] array which will be used as buffer for these enumerated instruction parts.
-//if a symbol is encountered, a name of a label or function, then the first argument will be set to S_NAME and the name will be stored in the char buffer supplied in the function arguments.
+//if a symbol is encountered, a name of a label or function, then the first argument will be set to N_NAME and the name will be stored in the char buffer supplied in the function arguments.
 //that way the decoded parts can be easily passed to different parts of the program
 void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int name_buffer_size) {
 	
@@ -319,13 +319,17 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	memset(name_buffer, 0, name_buffer_size);
 
 
+	/* legacy code for checking if formatted input was proper, was usefull for simple arithmetic but becomes a nightmare when you're allowed to use custom labelnames and functionames
+
 	//checking if formatted line only consists of first letters and then maybe some digits
 	int line_length = strlen(line_buffer);
-	int letter_length = strspn(line_buffer, "abcdefghijklmnopqrstuvwxyz");
+	int letter_length = strspn(line_buffer, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	int number_length = strspn(&line_buffer[letter_length], "0123456789");
 	if((number_length + letter_length) != line_length) {
 		handle_error(OTHER_ERROR, true, "Formatted line does not consist of first letters and then digits!");
 	}
+
+	*/
 	
 	#pragma region identify_command
 
@@ -482,6 +486,26 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	}
 
 	//handling symbol for label, goto and if-goto
+	if(int_buffer[0] == C_LABEL || int_buffer[0] == C_GOTO || int_buffer[0] == C_IF) {
+		int_buffer[1] = N_NAME; //declaring that a name is passed into name_buffer
+		memset(name_buffer, 0, name_buffer_size); //clearing name_buffer
+		char *symbol_ptr = NULL; //a pointer to the name
+		if(int_buffer[0] == C_LABEL) {
+			symbol_ptr = strstr(line_buffer, "label");
+			symbol_ptr += strlen("label");
+			strcpy(name_buffer, symbol_ptr);
+		}
+		else if(int_buffer[0] == C_GOTO) {
+			symbol_ptr = strstr(line_buffer, "goto");
+			symbol_ptr += strlen("goto");
+			strcpy(name_buffer, symbol_ptr);
+		}
+		else if(int_buffer[0] == C_IF) {
+			symbol_ptr = strstr(line_buffer, "if-goto");
+			symbol_ptr += strlen("if-goto");
+			strcpy(name_buffer, symbol_ptr);
+		}
+	}
 }
 
 

@@ -1,2 +1,3 @@
-push local 2
-pop argument 5
+label helloWorld
+goto helloWorld
+if-goto helloWorld

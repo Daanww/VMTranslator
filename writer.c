@@ -6,10 +6,14 @@
 #include "vm_assembly.h"
 
 
-
+//current asm file being written to
 static FILE *asm_file;
 //current line in asm file that is being written
 static int current_asm_line;
+//current function that is being written, used for labels and return addresses
+static char current_function[MAX_SYMBOL_LENGTH];
+
+
 //buffer to hold the decoded instructions received from code_parser
 //instruction_buffer[0] holds which type of instruction is used, forexample: push,pop,arithmetic,call,function etc.
 //instruction_buffer[1] holds the first argument, forexample: constant,static,local,argument,add,sub,lt etc.
@@ -17,12 +21,8 @@ static int current_asm_line;
 static int instruction_buffer[3];
 //buffer to hold symbols (variables/labels) received from code_parser
 static char symbol_buffer[MAX_SYMBOL_LENGTH];
-
-//flags to keep track if eq, gt or lt were already written to asm file
-//cuz some parts of the eq, gt and lt do not need to be written multiple times
-static bool already_eq = false;
-static bool already_gt = false;
-static bool already_lt = false;
+//buffer to hold the current function name being processed
+static char function_buffer[MAX_SYMBOL_LENGTH];
 
 
 
@@ -505,6 +505,63 @@ void write_pop(int *decoded_instruction_buffer, int decoded_instruction_buffer_s
 	}
 }
 
+//writing a label to asm file, label symbol_name is translated to (function_name$symbol_name) to allow jumping there
+void write_label(char *symbol_buffer) {
+	char asm_label_buffer[MAX_SYMBOL_LENGTH] = {0};
+	if(function_buffer[0] == 0) { //if current function is undefined/no function has been found yet
+		strcpy(asm_label_buffer, "(UNDEFINED_FUNCTION$");
+	}
+	else {
+		asm_label_buffer[0] = '(';
+		strcat(asm_label_buffer, function_buffer);
+		strcat(asm_label_buffer, "$");
+	}
+	strcat(asm_label_buffer, symbol_buffer);
+	strcat(asm_label_buffer, ")\n");
+	fputs(asm_label_buffer, asm_file);
+}
+
+//writes a goto to label to asm file, this will always jump
+void write_goto(char *symbol_buffer) {
+	char asm_goto_buffer[MAX_SYMBOL_LENGTH] = {0};
+	if(function_buffer[0] == 0) { //if current function is undefined/no function has been found yet
+		strcpy(asm_goto_buffer, "@UNDEFINED_FUNCTION$");
+	}
+	else {
+		asm_goto_buffer[0] = '@';
+		strcat(asm_goto_buffer, function_buffer);
+		strcat(asm_goto_buffer, "$");
+	}
+	strcat(asm_goto_buffer, symbol_buffer);
+	strcat(asm_goto_buffer, "\n");
+	fputs(asm_goto_buffer, asm_file);
+	fputs("D;JMP\n", asm_file);
+}
+
+
+//writes a if_goto to label to asm file, this is a conditional jump
+//this will first pop the topmost entry in the stack, if that is !0 then it will jump
+//if the popped entry is 0 then it will continue execution at the next instruction
+void write_if_goto(char *symbol_buffer) {
+	//popping top most stack entry and storing it in D
+	char pop_stack[] = "@0\nM=M-1\nA=M\nD=M\n";
+	fputs(pop_stack, asm_file);
+
+	char asm_if_goto_buffer[MAX_SYMBOL_LENGTH] = {0};
+	if(function_buffer[0] == 0) { //if current function is undefined/no function has been found yet
+		strcpy(asm_if_goto_buffer, "@UNDEFINED_FUNCTION$");
+	}
+	else {
+		asm_if_goto_buffer[0] = '@';
+		strcat(asm_if_goto_buffer, function_buffer);
+		strcat(asm_if_goto_buffer, "$");
+	}
+	strcat(asm_if_goto_buffer, symbol_buffer);
+	strcat(asm_if_goto_buffer, "\n");
+	fputs(asm_if_goto_buffer, asm_file);
+	fputs("D;JNE\n", asm_file);
+}
+
 //translate the received instructions into assembly and write that into the opened file
 void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
 	//checking size of buffers
@@ -532,15 +589,24 @@ void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_
 		//write pop instructions
 		write_pop(decoded_instruction_buffer, decoded_instruction_buffer_size, symbol_buffer, symbol_buffer_size);
 		break;
+
+	case C_LABEL:
+		write_label(symbol_buffer);
+		break;
+
+	case C_GOTO:
+		write_goto(symbol_buffer);
+		break;
+
+	case C_IF:
+		write_if_goto(symbol_buffer);
+		break;
 	
 	default:
 		break;
 	}
 }
 
-void write_init() {
-	
-}
 
 //closes the .asm file
 void close_asm_file() {
