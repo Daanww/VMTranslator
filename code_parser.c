@@ -298,6 +298,7 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	
 	//skipping if line is empty after formatting
 	if(strlen(line_buffer) == 0) {
+		int_buffer[0] = 0; //setting Command to 0 let the writer module know to not write anything
 		return;
 	}
 

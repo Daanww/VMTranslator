@@ -576,6 +576,11 @@ void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_
 	//determining type of instruction
 	switch (decoded_instruction_buffer[0])
 	{
+
+	case 0:
+		//empty line, skip
+		break;
+		
 	case C_ARTIHMETIC:
 		write_arithmetic(decoded_instruction_buffer, decoded_instruction_buffer_size, symbol_buffer, symbol_buffer_size);
 		break;
