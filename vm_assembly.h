@@ -65,4 +65,8 @@ const char push_temp[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //requires 
 const char pop_temp_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires a @3+x in the middle
 const char pop_temp_2[] = "M=D\n";
 
+const char ARG_SP_n_5_1[] = "@0\nD=M\n"; //requires @n in the middle
+const char ARG_SP_n_5_2[] = "D=D-A\n@5\nD=D-A\n@ARG\nM=D\n";
+const char LCL_SP[] = "@0\nD=M\n@LCL\nM=D\n";
+
 #endif

@@ -1,3 +1,3 @@
-label helloWorld
-goto helloWorld
-if-goto helloWorld
+label labelgotoif
+goto      labelgotoif
+if-goto labelgotoif

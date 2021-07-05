@@ -207,14 +207,15 @@ int read_line() {
 	return 0;
 }
 
-//formats the read line, removing whitespace and comments
+//formats the read line, truncating all spaces to 1 and removing comments
 void format_line() {
 	char new_buffer[MAX_LINE_LENGTH] = {0};
 	int slash_flag = 0;
 	static int long_comment_flag = 0; //long comment flag that carries over between lines, for /* */ comments
 	int new_buffer_index = 0;
+	int space_flag = 0;
 
-	//remove all whitespace and stop if it encounters //, /* or \n
+	//remove duplicate spaces and stop if it encounters //, /* or \n
 	for(int i=0; i<MAX_LINE_LENGTH; i++) {
 
 		if(long_comment_flag != 0) { //after a /*
@@ -246,9 +247,22 @@ void format_line() {
 		if(line_buffer[i] == '/')
 			slash_flag = 1;
 
-		if((line_buffer[i] != ' ') && (line_buffer[i] != '\t')) {
+		if(space_flag) {
+			if(line_buffer[i] == ' ')
+				continue;
+			else
+				space_flag = 0;				
+		}
+
+		//write character to new_buffer
+		if(line_buffer[i] != '\t') {
 			new_buffer[new_buffer_index] = line_buffer[i];
 			new_buffer_index++;
+		}
+
+
+		if(line_buffer[i] == ' ') {
+			space_flag = 1;
 		}
 	}
 	//copying new_buffer to line_buffer
@@ -296,11 +310,6 @@ int get_num_value() {
 //that way the decoded parts can be easily passed to different parts of the program
 void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int name_buffer_size) {
 	
-	//skipping if line is empty after formatting
-	if(strlen(line_buffer) == 0) {
-		int_buffer[0] = 0; //setting Command to 0 let the writer module know to not write anything
-		return;
-	}
 
 
 	//checking int_buffer size
@@ -319,6 +328,10 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	//resetting name_buffer
 	memset(name_buffer, 0, name_buffer_size);
 
+	//skipping if line is empty after formatting
+	if(strlen(line_buffer) == 0) {
+		return;
+	}
 
 	/* legacy code for checking if formatted input was proper, was usefull for simple arithmetic but becomes a nightmare when you're allowed to use custom labelnames and functionames
 
@@ -339,34 +352,49 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 
 	//push
 	found_string = strstr(line_buffer, "push");
-	if(found_string != NULL) { //found push
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found push at start of string
 		int_buffer[0] = C_PUSH;
 	}
 	//pop
 	found_string = strstr(line_buffer, "pop");
-	if(found_string != NULL) { //found pop
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found pop
 		int_buffer[0] = C_POP;
 	}
 
 	//label
 	found_string = strstr(line_buffer, "label");
-	if(found_string != NULL) { //found label
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found label
 		int_buffer[0] = C_LABEL;
 	}
 
 	//goto and if-goto
 	found_string = strstr(line_buffer, "goto");
 	if(found_string != NULL) { //found goto, might still be if-goto
-		found_string = strstr(line_buffer, "if");
-		if(found_string == NULL) { //found goto
+		if(found_string == &line_buffer[0]) { //goto is start of line
 			int_buffer[0] = C_GOTO;
 		}
-		else { //found if-goto
+		else if(strstr(line_buffer, "if") == &line_buffer[0]) { //found if at start of line
 			int_buffer[0] = C_IF;
 		}
 	}
 
-	
+	//function
+	found_string = strstr(line_buffer, "function");
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found function
+		int_buffer[0] = C_FUNCTION;
+	}
+
+	//return
+	found_string = strstr(line_buffer, "return");
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found return
+		int_buffer[0] = C_RETURN;
+	}
+
+	//call
+	found_string = strstr(line_buffer, "call");
+	if(found_string != NULL && found_string == &line_buffer[0]) { //found call
+		int_buffer[0] = C_CALL;
+	}
 
 	//if no other commands have been found, then it is either arithmetic or error
 	if(int_buffer[0] == 0) { //no other commands have been recognized
@@ -377,47 +405,47 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 
 		//add
 		found_string = strstr(line_buffer, "add");
-		if(found_string != NULL) { //found add
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found add
 			int_buffer[1] = A_ADD;
 		}	
 		//sub
 		found_string = strstr(line_buffer, "sub");
-		if(found_string != NULL) { //found sub
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found sub
 			int_buffer[1] = A_SUB;
 		}
 		//neg
 		found_string = strstr(line_buffer, "neg");
-		if(found_string != NULL) { //found neg
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found neg
 			int_buffer[1] = A_NEG;
 		}
 		//eq
 		found_string = strstr(line_buffer, "eq");
-		if(found_string != NULL) { //found eq
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found eq
 			int_buffer[1] = A_EQ;
 		}
 		//gt
 		found_string = strstr(line_buffer, "gt");
-		if(found_string != NULL) { //found gt
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found gt
 			int_buffer[1] = A_GT;
 		}
 		//lt
 		found_string = strstr(line_buffer, "lt");
-		if(found_string != NULL) { //found lt
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found lt
 			int_buffer[1] = A_LT;
 		}
 		//and
 		found_string = strstr(line_buffer, "and");
-		if(found_string != NULL) { //found and
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found and
 			int_buffer[1] = A_AND;
 		}
 		//or
 		found_string = strstr(line_buffer, "or");
-		if(found_string != NULL) { //found or
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found or
 			int_buffer[1] = A_OR;
 		}
 		//not
 		found_string = strstr(line_buffer, "not");
-		if(found_string != NULL) { //found not
+		if(found_string != NULL && found_string == &line_buffer[0]) { //found not
 			int_buffer[1] = A_NOT;
 		}
 
@@ -493,19 +521,48 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 		char *symbol_ptr = NULL; //a pointer to the name
 		if(int_buffer[0] == C_LABEL) {
 			symbol_ptr = strstr(line_buffer, "label");
-			symbol_ptr += strlen("label");
+			symbol_ptr += (strlen("label") + 1);
 			strcpy(name_buffer, symbol_ptr);
 		}
 		else if(int_buffer[0] == C_GOTO) {
 			symbol_ptr = strstr(line_buffer, "goto");
-			symbol_ptr += strlen("goto");
+			symbol_ptr += (strlen("goto") + 1);
 			strcpy(name_buffer, symbol_ptr);
 		}
 		else if(int_buffer[0] == C_IF) {
 			symbol_ptr = strstr(line_buffer, "if-goto");
-			symbol_ptr += strlen("if-goto");
+			symbol_ptr += (strlen("if-goto") + 1);
 			strcpy(name_buffer, symbol_ptr);
 		}
+	}
+
+
+	//handling symbol and arguments for function
+	if(int_buffer[0] == C_FUNCTION) {
+		int_buffer[1] = N_NAME; //declaring that a name is passed into name_buffer
+		memset(name_buffer, 0, name_buffer_size); //clearing name_buffer
+		char *symbol_ptr = NULL; //a pointer to the name
+
+		symbol_ptr = strstr(line_buffer, "function");
+		symbol_ptr += (strlen("function") + 1);
+		strcpy(name_buffer, symbol_ptr);
+
+		//finding number at the end of instruction
+		int_buffer[2] = get_num_value();
+	}
+
+	//handling symbol and arguments for call
+	if(int_buffer[0] == C_CALL) {
+		int_buffer[1] = N_NAME; //declaring that a name is passed into name_buffer
+		memset(name_buffer, 0, name_buffer_size); //clearing name_buffer
+		char *symbol_ptr = NULL; //a pointer to the name
+
+		symbol_ptr = strstr(line_buffer, "call");
+		symbol_ptr += (strlen("call") + 1);
+		strcpy(name_buffer, symbol_ptr);
+
+		//finding number at the end of instruction
+		int_buffer[2] = get_num_value();
 	}
 }
 

@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
 	//initialization
-	bool debug_mode = false;
+	bool debug_mode = true;
 	if(debug_mode) {
 		argc = 2;
 		argv[1] = "../test_folder/comparison_vm_test.vm";

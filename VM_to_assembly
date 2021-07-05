@@ -264,3 +264,22 @@ This/That:
 Local/Argument:
 	Same as This/That but with LCL and ARG instead of THIS and THAT and @temp_lcl_arg instead of @temp_this_that
 
+
+Function Calling:
+
+	ARG = SP-n-5:
+	@0
+	D=M
+	@n
+	D=D-A
+	@5
+	D=D-A
+	@ARG
+	M=D
+
+	LCL = SP:
+	@0
+	D=M
+	@LCL
+	M=D
+

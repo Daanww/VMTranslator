@@ -562,6 +562,83 @@ void write_if_goto(char *symbol_buffer) {
 	fputs("D;JNE\n", asm_file);
 }
 
+//writes function declaration to asm file, also stores current function name in function_buffer for use with call and return
+void write_function(int *decoded_instruction_buffer, char *symbol_buffer) {
+	strcpy(function_buffer, symbol_buffer); //copy function name to function_buffer
+	//write (function_name) to asm
+	char temp_buffer[MAX_LINE_LENGTH] = {0};
+	sprintf(temp_buffer, "(%s)\n", function_buffer);
+	fputs(temp_buffer, asm_file);
+	
+	//writing "push constant 0" for all local variables needed by function
+	for(int i = 0; i < decoded_instruction_buffer[2]; i++) {
+		write_constant(0);
+	}
+}
+
+void write_return() {
+
+}
+
+//writes function call to asm file
+void write_call(int *decoded_instruction_buffer, char *symbol_buffer) {
+	/* pseudo code for function call:
+	push return-address ; label declared below
+	push LCL ; save state of calling function
+	push ARG
+	push THIS
+	push THAT
+	ARG = SP-n-5 ; n=number of arguments for function == decoded_instruction_buffer[2]
+	LCL = SP
+	goto f ; transfer control
+	(return-address)
+	*/
+
+	char return_address[MAX_SYMBOL_LENGTH] = {0}; //buffer for generating unique return address for this function call
+	static int n_returns = 0; //counter for amount of function calls that have been made, used in generation of above
+	//generating return_address
+	sprintf(return_address, "%s.%i", symbol_buffer, n_returns);
+
+	//push return-address
+	char temp_buffer[MAX_SYMBOL_LENGTH] = {0};
+	sprintf(temp_buffer, "@%s\n", return_address);
+	fputs(temp_buffer, asm_file);
+	fputs(push_static, asm_file); //push_static is used because it is essentially just push variable which is also what is needed here
+
+	//push LCL
+	fputs("@LCL\n", asm_file);
+	fputs(push_static, asm_file);
+
+	//push ARG
+	fputs("@ARG\n", asm_file);
+	fputs(push_static, asm_file);
+
+	//push THIS
+	fputs("@THIS\n", asm_file);
+	fputs(push_static, asm_file);
+
+	//push THAT
+	fputs("@THAT\n", asm_file);
+	fputs(push_static, asm_file);
+
+	//ARG = SP-n-5
+	sprintf(temp_buffer, "@%i\n", decoded_instruction_buffer[2]); //setting up @n
+	fputs(ARG_SP_n_5_1, asm_file);
+	fputs(temp_buffer, asm_file);
+	fputs(ARG_SP_n_5_2, asm_file);
+
+	//LCL = SP
+	fputs(LCL_SP, asm_file);
+
+	//goto f
+	write_goto(symbol_buffer);
+
+	//(return-address)
+	sprintf(temp_buffer, "(%s)\n", return_address);
+	fputs(temp_buffer, asm_file);
+
+}
+
 //translate the received instructions into assembly and write that into the opened file
 void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {
 	//checking size of buffers
