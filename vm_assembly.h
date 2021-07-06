@@ -69,4 +69,11 @@ const char ARG_SP_n_5_1[] = "@0\nD=M\n"; //requires @n in the middle
 const char ARG_SP_n_5_2[] = "D=D-A\n@5\nD=D-A\n@ARG\nM=D\n";
 const char LCL_SP[] = "@0\nD=M\n@LCL\nM=D\n";
 
+const char FRAME_LCL[] = "@LCL\nD=M\n@R5\nM=D\n";
+const char RET_FRAME_5[] = "@R5 //FRAME\nD=M\n@5\nA=D-A //A=FRAME-5\nD=M\n@R6 //RET\nM=D\n";
+const char ARG_EQ_POP[] = "@0\nM=M-1\nA=M\nD=M\n@ARG\nA=M\nM=D\n";
+const char SP_ARG_1[] = "@ARG\nD=M+1\n@SP\nM=D\n";
+const char restore_memory_segments[] = "@R5\nD=M //FRAME\n@1\nA=D-A //FRAME-1\nD=M //*(FRAME-1)\n@THAT\nM=D\n@R5\nD=M //FRAME\n@2\nA=D-A //FRAME-2\nD=M //*(FRAME-2)\n@THIS\nM=D\n@R5\nD=M //FRAME\n@3\nA=D-A //FRAME-3\nD=M //*(FRAME-3)\n@ARG\nM=D\n@R5\nD=M //FRAME\n@4\nA=D-A //FRAME-4\nD=M //*(FRAME-4)\n@LCL\nM=D\n";
+const char GOTO_RET[] = "@R6 //RET\nA=M\nD;JMP\n";
+
 #endif

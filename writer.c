@@ -576,8 +576,43 @@ void write_function(int *decoded_instruction_buffer, char *symbol_buffer) {
 	}
 }
 
+//writes return to asm file
 void write_return() {
+	/* pseudo code for return:
+	FRAME = LCL ; setup local variable
+	RET = *(FRAME-5) ; get return-address
+	*ARG = pop()
+	SP = ARG+1
+	THAT = *(FRAME-1)
+	THIS = *(FRAME-2)
+	ARG = *(FRAME-3)
+	LCL = *(FRAME-4)
+	goto RET
+	*/
 
+	//FRAME = LCL
+	//FRAME is a temp variable, here R5 (base of temp segment) is used
+	fputs(FRAME_LCL, asm_file);
+
+	//RET = *(FRAME-5)
+	//RET is another temp variable used to hold return-address, R6 is used
+	fputs(RET_FRAME_5, asm_file);
+
+	//*ARG = pop()
+	//pop a value of the stack and store that in the location pointed at by ARG
+	fputs(ARG_EQ_POP, asm_file);
+
+	//SP = ARG+1
+	fputs(SP_ARG_1, asm_file);
+
+	//THAT = *(FRAME-1)
+	//THIS = *(FRAME-2)
+	//ARG = *(FRAME-3)
+	//LCL = *(FRAME-4)
+	fputs(restore_memory_segments, asm_file);
+
+	//goto RET
+	fputs(GOTO_RET, asm_file);
 }
 
 //writes function call to asm file
@@ -600,7 +635,7 @@ void write_call(int *decoded_instruction_buffer, char *symbol_buffer) {
 	sprintf(return_address, "%s.%i", symbol_buffer, n_returns);
 
 	//push return-address
-	char temp_buffer[MAX_SYMBOL_LENGTH] = {0};
+	char temp_buffer[MAX_LINE_LENGTH] = {0};
 	sprintf(temp_buffer, "@%s\n", return_address);
 	fputs(temp_buffer, asm_file);
 	fputs(push_static, asm_file); //push_static is used because it is essentially just push variable which is also what is needed here
@@ -682,6 +717,18 @@ void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_
 
 	case C_IF:
 		write_if_goto(symbol_buffer);
+		break;
+
+	case C_FUNCTION:
+		write_function(decoded_instruction_buffer, symbol_buffer);
+		break;
+
+	case C_RETURN:
+		write_return();
+		break;
+
+	case C_CALL:
+		write_call(decoded_instruction_buffer, symbol_buffer);
 		break;
 	
 	default:
