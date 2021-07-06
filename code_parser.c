@@ -234,7 +234,8 @@ void format_line() {
 		}
 		if((line_buffer[i] == '/') && slash_flag) { //for handling //
 			//last added character should be / so replace that with \0
-			new_buffer[new_buffer_index-1] = '\0';
+			new_buffer_index--;
+			new_buffer[new_buffer_index] = '\0';
 			break;
 		}
 		if((line_buffer[i] == '*') && slash_flag) { //for handling /*  */
@@ -265,6 +266,13 @@ void format_line() {
 			space_flag = 1;
 		}
 	}
+	//removing last character in formatted line if it is a space
+	if(new_buffer[new_buffer_index-1] == ' ') {
+		new_buffer[new_buffer_index-1] = 0;
+	}
+
+
+
 	//copying new_buffer to line_buffer
 	memcpy(line_buffer, &new_buffer, (MAX_LINE_LENGTH * sizeof(char)));
 
@@ -541,11 +549,17 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	if(int_buffer[0] == C_FUNCTION) {
 		int_buffer[1] = N_NAME; //declaring that a name is passed into name_buffer
 		memset(name_buffer, 0, name_buffer_size); //clearing name_buffer
-		char *symbol_ptr = NULL; //a pointer to the name
+		char *symbol_begin_ptr = NULL; //a pointer to the beginning of the name
+		char *symbol_end_ptr = NULL;
 
-		symbol_ptr = strstr(line_buffer, "function");
-		symbol_ptr += (strlen("function") + 1);
-		strcpy(name_buffer, symbol_ptr);
+		symbol_begin_ptr = strstr(line_buffer, "function");
+		symbol_begin_ptr += (strlen("function") + 1);
+		symbol_end_ptr = strchr(symbol_begin_ptr, ' ');
+		int symbol_length = (int)(symbol_end_ptr - symbol_begin_ptr);
+
+		//begin = 3, end = 6, symbol = munt, strchr(' ') = 7, 7-3=4 = strlen
+
+		strncpy(name_buffer, symbol_begin_ptr, symbol_length);
 
 		//finding number at the end of instruction
 		int_buffer[2] = get_num_value();
@@ -555,11 +569,25 @@ void decode_line(int *int_buffer, int int_buffer_size, char *name_buffer, int na
 	if(int_buffer[0] == C_CALL) {
 		int_buffer[1] = N_NAME; //declaring that a name is passed into name_buffer
 		memset(name_buffer, 0, name_buffer_size); //clearing name_buffer
+		/* legacy code
 		char *symbol_ptr = NULL; //a pointer to the name
 
 		symbol_ptr = strstr(line_buffer, "call");
 		symbol_ptr += (strlen("call") + 1);
 		strcpy(name_buffer, symbol_ptr);
+		*/
+
+		char *symbol_begin_ptr = NULL; //a pointer to the beginning of the name
+		char *symbol_end_ptr = NULL;
+
+		symbol_begin_ptr = strstr(line_buffer, "call");
+		symbol_begin_ptr += (strlen("call") + 1);
+		symbol_end_ptr = strchr(symbol_begin_ptr, ' ');
+		int symbol_length = (int)(symbol_end_ptr - symbol_begin_ptr);
+
+		//begin = 3, end = 6, symbol = munt, strchr(' ') = 7, 7-3=4 = strlen
+
+		strncpy(name_buffer, symbol_begin_ptr, symbol_length);
 
 		//finding number at the end of instruction
 		int_buffer[2] = get_num_value();

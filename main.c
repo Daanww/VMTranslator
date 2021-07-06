@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
 	
 	int enum_array[3] = {0};
 	char name_array[MAX_SYMBOL_LENGTH] = {0};
+
+	write_init_code(); //write bootstrap asm code for proper program execution
 	
 
 	//main loop

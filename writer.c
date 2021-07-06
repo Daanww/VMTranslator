@@ -40,6 +40,7 @@ void open_asm_file(char *argv[]) {
 	}
 }
 
+
 //writes a comparison operation (eq, gt, lt) to .asm file, keeps track of proper label names for jump instructions in comparison operation
 void write_comparison_operation(int operation) {
 	static int n_eq = 0; //how many eq operations have been written, this will be used as a suffix to the labels for jump instructions in the eq operation to allow proper jumps
@@ -633,12 +634,14 @@ void write_call(int *decoded_instruction_buffer, char *symbol_buffer) {
 	static int n_returns = 0; //counter for amount of function calls that have been made, used in generation of above
 	//generating return_address
 	sprintf(return_address, "%s.%i", symbol_buffer, n_returns);
+	//incrementing counter
+	n_returns++;
 
 	//push return-address
 	char temp_buffer[MAX_LINE_LENGTH] = {0};
 	sprintf(temp_buffer, "@%s\n", return_address);
 	fputs(temp_buffer, asm_file);
-	fputs(push_static, asm_file); //push_static is used because it is essentially just push variable which is also what is needed here
+	fputs(push_return_address, asm_file);
 
 	//push LCL
 	fputs("@LCL\n", asm_file);
@@ -666,13 +669,24 @@ void write_call(int *decoded_instruction_buffer, char *symbol_buffer) {
 	fputs(LCL_SP, asm_file);
 
 	//goto f
-	write_goto(symbol_buffer);
+	sprintf(temp_buffer, "@%s\n", symbol_buffer);
+	fputs(temp_buffer, asm_file);
+	fputs("D;JMP\n", asm_file);
 
 	//(return-address)
 	sprintf(temp_buffer, "(%s)\n", return_address);
 	fputs(temp_buffer, asm_file);
 
 }
+
+//writes init/bootstrap code
+void write_init_code() {
+	fputs(init_code, asm_file);
+	int decoded_instruction_buffer[3] = {C_CALL, N_NAME, 0};
+	char symbol_buffer[MAX_SYMBOL_LENGTH] = "Sys.init";
+	write_call(decoded_instruction_buffer, symbol_buffer);
+}
+
 
 //translate the received instructions into assembly and write that into the opened file
 void write_instruction(int *decoded_instruction_buffer, int decoded_instruction_buffer_size,  char *symbol_buffer, int symbol_buffer_size) {

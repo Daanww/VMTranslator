@@ -3,6 +3,9 @@
 
 #include <string.h>
 
+//bootstrap code
+const char init_code[] = "@256\nD=A\n@SP\nM=D //set SP to 256\n";
+
 /*arithmetic commands
 	A_ADD,
 	A_SUB,
@@ -65,6 +68,7 @@ const char push_temp[] = "D=M\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //requires 
 const char pop_temp_1[] = "@0\nM=M-1\nA=M\nD=M\n"; //requires a @3+x in the middle
 const char pop_temp_2[] = "M=D\n";
 
+const char push_return_address[] = "D=A\n@0 //SP\nA=M\nM=D\n@0 //SP\nM=M+1\n"; //needs an @Xxx\n in front of it to function
 const char ARG_SP_n_5_1[] = "@0\nD=M\n"; //requires @n in the middle
 const char ARG_SP_n_5_2[] = "D=D-A\n@5\nD=D-A\n@ARG\nM=D\n";
 const char LCL_SP[] = "@0\nD=M\n@LCL\nM=D\n";

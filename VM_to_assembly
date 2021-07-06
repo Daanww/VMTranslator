@@ -1,8 +1,11 @@
 Init:
 	@256
 	D=A
-	@0
+	@SP
 	M=D //set SP to 256
+	@Sys.init
+	D;JMP
+
 	
 
 
