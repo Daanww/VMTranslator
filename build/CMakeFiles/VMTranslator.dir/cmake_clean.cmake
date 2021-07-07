@@ -2,7 +2,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/VMTranslator.dir/code_parser.c.o"
   "CMakeFiles/VMTranslator.dir/error_handler.c.o"
   "CMakeFiles/VMTranslator.dir/main.c.o"
-  "CMakeFiles/VMTranslator.dir/memory_handler.c.o"
   "CMakeFiles/VMTranslator.dir/writer.c.o"
   "VMTranslator"
   "VMTranslator.pdb"

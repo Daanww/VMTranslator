@@ -601,33 +601,6 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/main.c.s
 .PHONY : main.c.s
 
-memory_handler.o: memory_handler.c.o
-
-.PHONY : memory_handler.o
-
-# target to build an object file
-memory_handler.c.o:
-	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/memory_handler.c.o
-.PHONY : memory_handler.c.o
-
-memory_handler.i: memory_handler.c.i
-
-.PHONY : memory_handler.i
-
-# target to preprocess a source file
-memory_handler.c.i:
-	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/memory_handler.c.i
-.PHONY : memory_handler.c.i
-
-memory_handler.s: memory_handler.c.s
-
-.PHONY : memory_handler.s
-
-# target to generate assembly for a file
-memory_handler.c.s:
-	$(MAKE) -f CMakeFiles/VMTranslator.dir/build.make CMakeFiles/VMTranslator.dir/memory_handler.c.s
-.PHONY : memory_handler.c.s
-
 writer.o: writer.c.o
 
 .PHONY : writer.o
@@ -704,9 +677,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... memory_handler.o"
-	@echo "... memory_handler.i"
-	@echo "... memory_handler.s"
 	@echo "... writer.o"
 	@echo "... writer.i"
 	@echo "... writer.s"

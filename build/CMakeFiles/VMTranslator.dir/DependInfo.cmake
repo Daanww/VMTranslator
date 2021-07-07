@@ -7,7 +7,6 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/daan/Documents/vscodeprojects/VMTranslator/code_parser.c" "/home/daan/Documents/vscodeprojects/VMTranslator/build/CMakeFiles/VMTranslator.dir/code_parser.c.o"
   "/home/daan/Documents/vscodeprojects/VMTranslator/error_handler.c" "/home/daan/Documents/vscodeprojects/VMTranslator/build/CMakeFiles/VMTranslator.dir/error_handler.c.o"
   "/home/daan/Documents/vscodeprojects/VMTranslator/main.c" "/home/daan/Documents/vscodeprojects/VMTranslator/build/CMakeFiles/VMTranslator.dir/main.c.o"
-  "/home/daan/Documents/vscodeprojects/VMTranslator/memory_handler.c" "/home/daan/Documents/vscodeprojects/VMTranslator/build/CMakeFiles/VMTranslator.dir/memory_handler.c.o"
   "/home/daan/Documents/vscodeprojects/VMTranslator/writer.c" "/home/daan/Documents/vscodeprojects/VMTranslator/build/CMakeFiles/VMTranslator.dir/writer.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
