@@ -592,11 +592,11 @@ void write_return() {
 	*/
 
 	//FRAME = LCL
-	//FRAME is a temp variable, here R5 (base of temp segment) is used
+	//FRAME is a temp variable, here R13 (general purpose register) is used
 	fputs(FRAME_LCL, asm_file);
 
 	//RET = *(FRAME-5)
-	//RET is another temp variable used to hold return-address, R6 is used
+	//RET is another temp variable used to hold return-address, R14 is used
 	fputs(RET_FRAME_5, asm_file);
 
 	//*ARG = pop()
